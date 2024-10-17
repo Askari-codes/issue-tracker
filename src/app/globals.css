@@ -6,11 +6,13 @@
   --foreground-rgb: 0, 0, 0;
   --text-zinc-500:#71717A;
   --text-zinc-800:#27272A;
+  --text-zinc-900:#18181B;
 
 
 
   --text-link-navbar:var(--text-zinc-500);
   --text-link-navbar-hover:var(--text-zinc-800);
+  --text-link-navbar-active:var(--text-zinc-900);
  
 }
 
