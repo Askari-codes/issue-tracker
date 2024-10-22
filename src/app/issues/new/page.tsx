@@ -1,4 +1,5 @@
 "use client";
+
 import { TextField, Button, Callout, Text } from "@radix-ui/themes";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
@@ -8,12 +9,18 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createIssueSchema } from "../../validationSchema";
 import { z } from "zod";
-import { useState } from "react";
+import { ChangeEventHandler, useState } from "react";
+import ErrorMessage from "../../Components/ErrorMessage";
 
 type issueForm = z.infer<typeof createIssueSchema>;
 
 const NewIssuePage = () => {
   const [error, setError] = useState("");
+
+  const [isClicked, setIsClicked] = useState<boolean>(false);
+  const [isTitleFill, setIsTitleFill] = useState<boolean>(false);
+  const [isdescriptionFill, setIsDescriptionFill] =
+    useState<boolean>(false);
   const {
     register,
     control,
@@ -35,6 +42,26 @@ const NewIssuePage = () => {
     }
   };
 
+  const handleClick = () => {
+    setIsClicked(true);
+  };
+  const titleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsClicked(false);
+    if (e.target.value) {
+      setIsTitleFill(true);
+    }else{
+      setIsTitleFill(false)
+    }
+  };
+  const descriptionHandler = (value: string) => {
+    setIsClicked(false);
+    if (value) {
+      setIsDescriptionFill(true);
+    } else {
+      setIsDescriptionFill(false);
+    }
+  };
+
   return (
     <div>
       {error && (
@@ -47,28 +74,29 @@ const NewIssuePage = () => {
         className="max-w-[50%] space-y-3  mt-2 "
       >
         <TextField.Root
-          placeholder="Title"
           {...register("title")}
+          onChange={titleHandler}
+          placeholder="Title"
         ></TextField.Root>
-        {errors.title && (
-          <Text as="p" color="red">
-            {errors.title.message}
-          </Text>
+        {isClicked && !isTitleFill && (
+          <ErrorMessage>{errors.title?.message}</ErrorMessage>
         )}
         <Controller
           name="description"
           control={control}
           render={({ field }) => (
-            <SimpleMDE placeholder="description" {...field} />
+            <SimpleMDE
+              placeholder="description"
+              {...field}
+              onChange={descriptionHandler}
+            />
           )}
         />
-        {errors.description && (
-          <Text as="p" color="red">
-            {errors.description.message}
-          </Text>
+        {isClicked && !isdescriptionFill && (
+          <ErrorMessage>{errors.description?.message}</ErrorMessage>
         )}
 
-        <Button>Submit New Issue</Button>
+        <Button onClick={handleClick}>Submit New Issue</Button>
       </form>
     </div>
   );
