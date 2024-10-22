@@ -1,5 +1,5 @@
 "use client";
-import { TextField, Button, Callout } from "@radix-ui/themes";
+import { TextField, Button } from "@radix-ui/themes";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import axios from "axios";
@@ -91,7 +91,7 @@ const NewIssuePage = () => {
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
       )}
 
-      <Button onClick={handleClick}>
+      <Button disabled={isSubmitted} onClick={handleClick}>
         Submit New Issue {isSubmitted && <Spinner />}{" "}
       </Button>
     </form>
