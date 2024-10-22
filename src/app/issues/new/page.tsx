@@ -1,6 +1,5 @@
 "use client";
-
-import { TextField, Button, Callout, Text } from "@radix-ui/themes";
+import { TextField, Button, Callout } from "@radix-ui/themes";
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
 import axios from "axios";
@@ -9,18 +8,17 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createIssueSchema } from "../../validationSchema";
 import { z } from "zod";
-import { ChangeEventHandler, useState } from "react";
+import { useState } from "react";
 import ErrorMessage from "../../Components/ErrorMessage";
+import Spinner from "../../Components/Spinner";
 
 type issueForm = z.infer<typeof createIssueSchema>;
 
 const NewIssuePage = () => {
-  const [error, setError] = useState("");
-
   const [isClicked, setIsClicked] = useState<boolean>(false);
+  const [isSubmitted, setSubmitted] = useState<boolean>(false);
   const [isTitleFill, setIsTitleFill] = useState<boolean>(false);
-  const [isdescriptionFill, setIsDescriptionFill] =
-    useState<boolean>(false);
+  const [isdescriptionFill, setIsDescriptionFill] = useState<boolean>(false);
   const {
     register,
     control,
@@ -32,12 +30,16 @@ const NewIssuePage = () => {
   const router = useRouter();
 
   const submitHandler = async (data: issueForm) => {
+    console.log("form is submitted");
+
     try {
+      setSubmitted(true);
       await axios.post("/api/issue", data);
       router.push("/issues");
     } catch (error) {
+      setSubmitted(false);
       if (axios.isAxiosError(error)) {
-        setError("an unexpected error occurred");
+        console.log(error);
       }
     }
   };
@@ -49,56 +51,50 @@ const NewIssuePage = () => {
     setIsClicked(false);
     if (e.target.value) {
       setIsTitleFill(true);
-    }else{
-      setIsTitleFill(false)
-    }
-  };
-  const descriptionHandler = (value: string) => {
-    setIsClicked(false);
-    if (value) {
-      setIsDescriptionFill(true);
     } else {
-      setIsDescriptionFill(false);
+      setIsTitleFill(false);
     }
   };
 
   return (
-    <div>
-      {error && (
-        <Callout.Root className="max-w-[50%] mb-5">
-          <Callout.Text color="red">{error}</Callout.Text>
-        </Callout.Root>
+    <form
+      onSubmit={handleSubmit(submitHandler)}
+      className="max-w-[50%] space-y-3  mt-2 "
+    >
+      <TextField.Root
+        {...register("title")}
+        onChange={titleHandler}
+        placeholder="Title"
+      ></TextField.Root>
+      {isClicked && !isTitleFill && (
+        <ErrorMessage>{errors.title?.message}</ErrorMessage>
       )}
-      <form
-        onSubmit={handleSubmit(submitHandler)}
-        className="max-w-[50%] space-y-3  mt-2 "
-      >
-        <TextField.Root
-          {...register("title")}
-          onChange={titleHandler}
-          placeholder="Title"
-        ></TextField.Root>
-        {isClicked && !isTitleFill && (
-          <ErrorMessage>{errors.title?.message}</ErrorMessage>
+      <Controller
+        name="description"
+        control={control}
+        render={({ field: { onChange } }) => (
+          <SimpleMDE
+            placeholder="description"
+            onChange={(newValue: string) => {
+              setIsClicked(false);
+              if (newValue) {
+                setIsDescriptionFill(true);
+              } else {
+                setIsDescriptionFill(false);
+              }
+              onChange(newValue);
+            }}
+          />
         )}
-        <Controller
-          name="description"
-          control={control}
-          render={({ field }) => (
-            <SimpleMDE
-              placeholder="description"
-              {...field}
-              onChange={descriptionHandler}
-            />
-          )}
-        />
-        {isClicked && !isdescriptionFill && (
-          <ErrorMessage>{errors.description?.message}</ErrorMessage>
-        )}
+      />
+      {isClicked && !isdescriptionFill && (
+        <ErrorMessage>{errors.description?.message}</ErrorMessage>
+      )}
 
-        <Button onClick={handleClick}>Submit New Issue</Button>
-      </form>
-    </div>
+      <Button onClick={handleClick}>
+        Submit New Issue {isSubmitted && <Spinner />}{" "}
+      </Button>
+    </form>
   );
 };
 
