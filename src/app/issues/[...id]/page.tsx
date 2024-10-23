@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import React from "react";
 import delay from "delay";
 import { Badge, Card, Flex, Heading, Text } from "@radix-ui/themes";
+import ReactMarkdown from 'react-markdown'
 
 interface Props {
   params: { id: string };
@@ -24,7 +25,11 @@ const IssueDetail = async ({ params }: Props) => {
         <Badge>{issue?.status}</Badge>
         <Text>{issue?.createdAt.toDateString()}</Text>
       </Flex>
-      <Card>{issue?.description}</Card>
+      <Card>
+        <ReactMarkdown className="prose">
+          {issue.description}
+        </ReactMarkdown>
+        </Card>
     </div>
   );
 };
