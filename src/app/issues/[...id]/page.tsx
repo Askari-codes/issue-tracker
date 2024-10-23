@@ -1,30 +1,32 @@
-import prisma from '@/prisma/client'
-import { notFound } from 'next/navigation'
-import React from 'react'
-import delay from 'delay'
+import prisma from "@/prisma/client";
+import { notFound } from "next/navigation";
+import React from "react";
+import delay from "delay";
+import { Badge, Card, Flex, Heading, Text } from "@radix-ui/themes";
 
 interface Props {
-    params:{id:string}
+  params: { id: string };
 }
 
-const IssueDetail = async ({params}:Props) => {
-    await delay(2000)
-    if(typeof params.id!=='number') notFound()
-    const issue= await prisma.issue.findUnique({
-        where:{id:parseInt(params.id)}
-    })
-    if(!issue)
-        return notFound()
+const IssueDetail = async ({ params }: Props) => {
+  await delay(2000);
+  const issueId = parseInt(params.id);
+  if (isNaN(issueId)) return notFound();
+
+  const issue = await prisma.issue.findUnique({
+    where: { id: parseInt(params.id) },
+  });
+  if (!issue) return notFound();
   return (
     <div>
-      <div>{issue?.title}</div>
-      <div>{issue?.description}</div>
-      <div>{issue?.status}</div>
-      <div>{issue?.createdAt.toDateString()}</div>
-     
-      
+      <Heading>{issue?.title}</Heading>
+      <Flex gap="3" my="3">
+        <Badge>{issue?.status}</Badge>
+        <Text>{issue?.createdAt.toDateString()}</Text>
+      </Flex>
+      <Card>{issue?.description}</Card>
     </div>
-  )
-}
+  );
+};
 
-export default IssueDetail
+export default IssueDetail;
