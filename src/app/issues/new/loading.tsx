@@ -1,11 +1,12 @@
-import React from 'react'
 
-const NewIssueLoadingPage = () => {
-  return (
-    <div>
-      ...loading
-    </div>
-  )
-}
+import React from "react"
+const LoadingNewIssuePage = async() => {
 
-export default NewIssueLoadingPage
+    return (
+     <div>
+        ...loading
+     </div>
+    )
+  }
+  
+  export default LoadingNewIssuePage
