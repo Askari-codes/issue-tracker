@@ -8,18 +8,17 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { issueSchema } from "../../validationSchema";
 import { z } from "zod";
-import { useState } from "react";
-import {ErrorMessage,Spinner} from "@/src/app/Components";
+import { useEffect, useState } from "react";
+import { ErrorMessage, Spinner } from "@/src/app/Components";
 import { Issue } from "@prisma/client";
-
-
+import { log } from "node:console";
 
 type issueFormData = z.infer<typeof issueSchema>;
 
 const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
   ssr: false,
 });
-const NewIssuePage = ({issue}:{issue?:Issue}) => {
+const NewIssuePage = ({ issue }: { issue?: Issue }) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [isSubmitted, setSubmitted] = useState<boolean>(false);
   const [isTitleFill, setIsTitleFill] = useState<boolean>(false);
@@ -35,10 +34,13 @@ const NewIssuePage = ({issue}:{issue?:Issue}) => {
   const router = useRouter();
 
   const submitHandler = async (data: issueFormData) => {
-    console.log("form is submitted");
+    console.log('data',data);
+    console.log('issue',issue);
+    
 
     try {
       setSubmitted(true);
+      if (issue) await axios.patch("/api/issue/" + issue.id, data);
       await axios.post("/api/issue", data);
       router.push("/issues");
     } catch (error) {
@@ -51,6 +53,7 @@ const NewIssuePage = ({issue}:{issue?:Issue}) => {
 
   const handleClick = () => {
     setIsClicked(true);
+    
   };
   const titleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsClicked(false);
@@ -79,8 +82,8 @@ const NewIssuePage = ({issue}:{issue?:Issue}) => {
         name="description"
         control={control}
         defaultValue={issue?.description}
-        render={({ field: { onChange,value } }) => (
-            <SimpleMDE
+        render={({ field: { onChange, value } }) => (
+          <SimpleMDE
             value={value}
             placeholder="description"
             onChange={(newValue: string) => {
@@ -100,11 +103,10 @@ const NewIssuePage = ({issue}:{issue?:Issue}) => {
       )}
 
       <Button disabled={isSubmitted} onClick={handleClick}>
-        Submit New Issue {isSubmitted && <Spinner />}{" "}
+        {issue?'Update issue':'New Issue'} {''} {isSubmitted && <Spinner />}{" "}
       </Button>
     </form>
   );
 };
 
 export default NewIssuePage;
-
