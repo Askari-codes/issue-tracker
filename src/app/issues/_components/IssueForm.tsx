@@ -43,6 +43,7 @@ const NewIssuePage = ({ issue }: { issue?: Issue }) => {
       if (issue) await axios.patch("/api/issue/" + issue.id, data);
       await axios.post("/api/issue", data);
       router.push("/issues");
+      router.refresh()
     } catch (error) {
       setSubmitted(false);
       if (axios.isAxiosError(error)) {
