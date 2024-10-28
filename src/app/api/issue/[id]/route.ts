@@ -15,6 +15,12 @@ export async function PATCH(
     where: { id: parseInt(params.id) },
   });
   if (!issue) return NextResponse.json("invalid issue", { status: 404 });
+  const isDataUnchanged =
+  issue.title === body.title && issue.description === body.description;
+
+if (isDataUnchanged) {
+  return NextResponse.json("No changes detected", { status: 204 }); // 204 - No Content
+}
 
   const updatedIssue = await prisma.issue.update({
     where: { id: issue.id },

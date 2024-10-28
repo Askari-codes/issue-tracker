@@ -4,11 +4,13 @@ import { notFound } from "next/navigation";
 import Detail from "./Detail";
 import EditIssueButton from "./EditIssueButton";
 
+
 interface Props {
   params: { id: string };
 }
 
 const IssueDetail = async ({ params }: Props) => {
+ 
   const issueId = parseInt(params.id);
   if (isNaN(issueId)) return notFound();
 

@@ -1,23 +1,20 @@
 "use client";
-import { TextField, Button } from "@radix-ui/themes";
-import dynamic from "next/dynamic";
-import "easymde/dist/easymde.min.css";
-import axios from "axios";
-import { Controller, useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { issueSchema } from "../../validationSchema";
-import { z } from "zod";
-import { useEffect, useState } from "react";
 import { ErrorMessage, Spinner } from "@/src/app/Components";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Issue } from "@prisma/client";
-import { log } from "node:console";
+import { Button, TextField } from "@radix-ui/themes";
+import axios from "axios";
+import "easymde/dist/easymde.min.css";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { z } from "zod";
+import SimpleMDE from 'react-simplemde-editor'
+import { issueSchema } from "../../validationSchema";
 
 type issueFormData = z.infer<typeof issueSchema>;
 
-const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
-  ssr: false,
-});
+
 const NewIssuePage = ({ issue }: { issue?: Issue }) => {
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [isSubmitted, setSubmitted] = useState<boolean>(false);
@@ -40,10 +37,18 @@ const NewIssuePage = ({ issue }: { issue?: Issue }) => {
 
     try {
       setSubmitted(true);
-      if (issue) await axios.patch("/api/issue/" + issue.id, data);
-      await axios.post("/api/issue", data);
-      router.push("/issues");
-      router.refresh()
+    if (issue) {
+      await axios.patch("/api/issue/" + issue.id, data);
+      router.push('/issues')
+    
+    }
+      
+      else{
+        
+        await axios.post("/api/issue", data);
+        router.push("/issues");
+        router.refresh()
+      }
     } catch (error) {
       setSubmitted(false);
       if (axios.isAxiosError(error)) {

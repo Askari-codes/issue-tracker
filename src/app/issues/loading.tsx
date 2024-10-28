@@ -1,10 +1,14 @@
-import {  Table } from "@radix-ui/themes";
+"use client";
+import { Table } from "@radix-ui/themes";
 import React from "react";
-import {Skeleton} from '@/src/app/Components'
+import { Skeleton } from "@/src/app/Components";
 import IssueActions from "./IssueActions";
+import { usePathname } from "next/navigation";
 
 const LoadingIssueText = () => {
+  const pathname = usePathname();
   const issues = ["1", "2", "3", "4", "5"];
+  if (pathname !== "/issues") return null;
   return (
     <div>
       <IssueActions />

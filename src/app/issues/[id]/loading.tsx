@@ -1,8 +1,14 @@
+'use client'
 import { Flex, Card, Box } from '@radix-ui/themes'
 import React from 'react'
 import { Skeleton } from '../../Components'
+import { usePathname,useParams } from 'next/navigation'
 
 const loading = () => {
+  const pathname = usePathname()
+  const {id} = useParams()
+  console.log(pathname);
+  if(pathname!== `/issues/${id}`) return null
   return (
     <Box className='max-w-xl'>
        <Skeleton/>

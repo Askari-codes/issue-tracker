@@ -1,11 +1,4 @@
+import IssueFormSkeleton from "../_components/IssueFormSkeleton";
 
-const LoadingNewIssuePage = async() => {
+export default IssueFormSkeleton
 
-    return (
-     <div>
-      loading ...
-     </div>
-    )
-  }
-  
-  export default LoadingNewIssuePage
