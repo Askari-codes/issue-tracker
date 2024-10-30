@@ -1,11 +1,12 @@
 "use client";
 import { AlertDialog, Button, Flex } from "@radix-ui/themes";
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 
 const DeleteIssueButton = () => {
+    const [error,setError] = useState(false)
   const { id } = useParams();
   const router = useRouter();
 
@@ -15,10 +16,11 @@ const DeleteIssueButton = () => {
       router.push("/issues");
       router.refresh();
     } catch (error) {
-      console.log("an error happend", error);
+        setError(true)
     }
   };
   return (
+    <>
     <AlertDialog.Root>
       <AlertDialog.Trigger>
         <Button color="red">Delete Issue</Button>
@@ -40,6 +42,22 @@ const DeleteIssueButton = () => {
         </Flex>
       </AlertDialog.Content>
     </AlertDialog.Root>
+    <AlertDialog.Root open={error}>
+        <AlertDialog.Content>
+            <AlertDialog.Title>
+                Delete
+            </AlertDialog.Title>
+            <AlertDialog.Description>
+                you can not delete this issue
+            </AlertDialog.Description>
+            <AlertDialog.Cancel >
+                <Button mt='2' color="gray" variant="soft" onClick={()=>setError(false)}>
+                   Ok
+                </Button>
+            </AlertDialog.Cancel>
+        </AlertDialog.Content>
+    </AlertDialog.Root>
+    </>
   );
 };
 
