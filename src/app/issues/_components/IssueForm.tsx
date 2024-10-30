@@ -31,9 +31,6 @@ const NewIssuePage = ({ issue }: { issue?: Issue }) => {
   const router = useRouter();
 
   const submitHandler = async (data: issueFormData) => {
-    console.log('data',data);
-    console.log('issue',issue);
-    
 
     try {
       setSubmitted(true);
