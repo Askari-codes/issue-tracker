@@ -5,7 +5,7 @@ import { AiFillBug } from "react-icons/ai";
 import { usePathname } from "next/navigation";
 import classNames from "classnames";
 import { useSession } from "next-auth/react";
-import { Box } from "@radix-ui/themes";
+import { Box, Container, Flex } from "@radix-ui/themes";
 
 const NavBar = () => {
   const { status, data: session } = useSession();
@@ -17,8 +17,11 @@ const NavBar = () => {
     { label: "Issues", href: "/issues" },
   ];
   return (
-    <nav className="flex space-x-6 border-b-2 px-5 h-14 items-center">
-      <Link href="/">
+    <nav className=" border-b-2 px-5 py-3">
+      <Container>
+      <Flex justify='between'>
+        <Flex align='center' gap='3'>
+        <Link href="/">
         <AiFillBug />
       </Link>
       <ul className=" flex space-x-5">
@@ -37,13 +40,18 @@ const NavBar = () => {
           </li>
         ))}
       </ul>
-      <Box>
+        </Flex>
+        <Box>
         {status === "authenticated" ? (
           <Link href={"/api/auth/signout"}>logout</Link>
         ) : (
           <Link href="/api/auth/signin">login</Link>
         )}
-      </Box>
+        </Box>
+      </Flex>
+     
+      </Container>
+     
     </nav>
   );
 };
