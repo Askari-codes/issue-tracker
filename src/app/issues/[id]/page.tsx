@@ -6,14 +6,14 @@ import EditIssueButton from "./EditIssueButton";
 import DeleteIssueButton from "./DeleteIssueButton";
 import { getServerSession } from "next-auth";
 import authOptions from "../../api/auth/authOptions";
-
+import AssigneeSelect from "./AssigneeSelect";
 
 interface Props {
   params: { id: string };
 }
 
 const IssueDetail = async ({ params }: Props) => {
- const sesssion =await getServerSession(authOptions)
+  const sesssion = await getServerSession(authOptions);
   const issueId = parseInt(params.id);
   if (isNaN(issueId)) return notFound();
 
@@ -22,16 +22,19 @@ const IssueDetail = async ({ params }: Props) => {
   });
   if (!issue) return notFound();
   return (
-    <Grid  columns={{ initial: "1", sm: "5" }} gap="5">
+    <Grid columns={{ initial: "1", sm: "5" }} gap="5">
       <Box className="md:col-span-4">
         <Detail issue={issue} />
       </Box>
-     {sesssion&& <Box >
-       <Flex  direction='column' gap='4'>
-       <EditIssueButton issueId={issue.id} />
-       <DeleteIssueButton/>
-       </Flex>
-      </Box>}
+      {sesssion && (
+        <Box>
+          <Flex direction="column" gap="4">
+            <AssigneeSelect />
+            <EditIssueButton issueId={issue.id} />
+            <DeleteIssueButton />
+          </Flex>
+        </Box>
+      )}
     </Grid>
   );
 };
