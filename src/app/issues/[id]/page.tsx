@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import Detail from "./Detail";
 import EditIssueButton from "./EditIssueButton";
 import DeleteIssueButton from "./DeleteIssueButton";
+import { getServerSession } from "next-auth";
+import authOptions from "../../api/auth/authOptions";
 
 
 interface Props {
@@ -11,7 +13,7 @@ interface Props {
 }
 
 const IssueDetail = async ({ params }: Props) => {
- 
+ const sesssion =await getServerSession(authOptions)
   const issueId = parseInt(params.id);
   if (isNaN(issueId)) return notFound();
 
@@ -24,12 +26,12 @@ const IssueDetail = async ({ params }: Props) => {
       <Box className="md:col-span-4">
         <Detail issue={issue} />
       </Box>
-      <Box >
+     {sesssion&& <Box >
        <Flex  direction='column' gap='4'>
        <EditIssueButton issueId={issue.id} />
        <DeleteIssueButton/>
        </Flex>
-      </Box>
+      </Box>}
     </Grid>
   );
 };

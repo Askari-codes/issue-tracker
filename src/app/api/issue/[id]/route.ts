@@ -2,11 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { issueSchema } from "@/src/app/validationSchema";
 import prisma from "@/prisma/client";
 import delay from 'delay';
+import { getServerSession } from "next-auth";
+import authOptions from "../../auth/authOptions";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const session =await getServerSession(authOptions)
+  if (!session) return NextResponse.json({},{status:401})
   const body = await request.json();
   const validation = issueSchema.safeParse(body);
   if (!validation.success)
@@ -36,6 +40,8 @@ if (isDataUnchanged) {
 
 
 export async function DELETE(request:NextResponse,{ params }: { params: { id: string } }) {
+  const session =await getServerSession(authOptions)
+  if (!session) return NextResponse.json({},{status:401})
   if(isNaN(parseInt(params.id))){
     return NextResponse.json({error:'Invalid Id format'},{status:400})
   }
