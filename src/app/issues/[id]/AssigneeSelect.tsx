@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Skeleton from "@/src/app/Components/Skeleton";
 import toast, { Toaster } from "react-hot-toast";
-import { use } from "react";
 
 const AssigneeSelect = ({ issue }: { issue: Issue }) => {
   const {
@@ -21,9 +20,8 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
   if (isLoading) return <Skeleton />;
   if (error) return null;
 
-  
   const onChangeHandler = (userId: string) => {
-    const targetUser=users?.find(user=>user.id===userId)
+    const targetUser = users?.find((user) => user.id === userId);
     if (userId) {
       axios
         .patch(
@@ -31,15 +29,12 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
           userId === "unassigned"
             ? { assignedToUserId: null }
             : { assignedToUserId: userId }
-            
         )
-        .then(()=>{
-          if(userId==='unassigned'){
-            toast.success(`The issue is unassigned now`)
-          }
-          else{
-
-            toast.success(`The issue is assigned to ${targetUser?.email}`)
+        .then(() => {
+          if (userId === "unassigned") {
+            toast.success(`The issue is unassigned now`);
+          } else {
+            toast.success(`The issue is assigned to ${targetUser?.email}`);
           }
         })
         .catch(() => {

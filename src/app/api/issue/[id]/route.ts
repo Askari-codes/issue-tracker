@@ -1,10 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { patchIssueSchema } from "@/src/app/validationSchema";
 import prisma from "@/prisma/client";
+import { patchIssueSchema } from "@/src/app/validationSchema";
 import delay from "delay";
 import { getServerSession } from "next-auth";
+import { NextRequest, NextResponse } from "next/server";
 import authOptions from "../../auth/authOptions";
-import { error, log } from "node:console";
 
 export async function PATCH(
   request: NextRequest,
@@ -17,7 +16,7 @@ export async function PATCH(
   if (!validation.success)
     return NextResponse.json(validation.error.format(), { status: 400 });
 
-  const { assignedToUserId, title, description } = body;
+  const { assignedToUserId, title, description, status } = body;
   if (assignedToUserId) {
     const user = await prisma.user.findUnique({
       where: { id: assignedToUserId },
@@ -38,10 +37,13 @@ export async function PATCH(
   if (isDataUnchanged) {
     return NextResponse.json("No changes detected", { status: 204 }); // 204 - No Content
   }
+  if (!status) {
+    NextResponse.json("invalid status", { status: 404 });
+  }
 
   const updatedIssue = await prisma.issue.update({
     where: { id: issue.id },
-    data: { title, description, assignedToUserId },
+    data: { title, description, assignedToUserId,status },
   });
   return NextResponse.json(updatedIssue, { status: 201 });
 }
