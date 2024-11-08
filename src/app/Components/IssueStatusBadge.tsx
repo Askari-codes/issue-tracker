@@ -1,40 +1,48 @@
-'use client'
+"use client";
 import { Status } from "@prisma/client";
 import { Badge } from "@radix-ui/themes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StatusDropdown from "../issues/StatusDropdown";
 
 const statusMap: Record<
   Status,
-  { lable: string; color: "red" | "violet" | "green" }
+  { lable: Status; color: "red" | "violet" | "green" }
 > = {
-  OPEN: { lable: "Open", color: "red" },
-  IN_PROGRESS: { lable: "In Progress", color: "violet" },
-  CLOSE: { lable: "Close", color: "green" },
+  OPEN: { lable: "OPEN", color: "red" },
+  IN_PROGRESS: { lable: "IN_PROGRESS", color: "violet" },
+  CLOSE: { lable: "CLOSE", color: "green" },
 };
 
-const IssueStatusBadge = ({ Status,id }: { Status: Status,id:number }) => {
+const IssueStatusBadge = ({ status, id }: { status: Status; id: number }) => {
+  const [badgeStatus, setBadgeStatus] = useState<Status>(
+    statusMap[status].lable
+  );
+
+  useEffect(() => {
+    setBadgeStatus(status);
+  }, [status]);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
-  const [statusLable,setStatusLable] = useState(statusMap[Status].lable)
-  const [statusColor,setStatusColor] = useState(statusMap[Status].color)
 
   const toggleDropdown = () => setDropdownVisible(!isDropdownVisible);
-  const handleValueChange=(value:string)=>{
-    const newStaus =value as Status
-    setStatusLable(statusMap[newStaus].lable)
-    setStatusColor(statusMap[newStaus].color)
-    }
-  
+  const handleValueChange = (newStatus: string) => {
+    const updatedStatus = newStatus as Status;
+    setBadgeStatus(updatedStatus);
+    setDropdownVisible(false);
+  };
+
   return (
-    <Badge className="cursor-pointer" onClick={toggleDropdown} color={statusColor}>
+    <Badge
+      className="cursor-pointer"
+      onClick={toggleDropdown}
+      color={statusMap[badgeStatus].color}
+    >
       {!isDropdownVisible ? (
-        statusLable
+        badgeStatus
       ) : (
-        <StatusDropdown id={id} onValueChange={handleValueChange}   />
+        <StatusDropdown id={id} onValueChange={handleValueChange} />
       )}
     </Badge>
   );
 };
 
 export default IssueStatusBadge;
-
