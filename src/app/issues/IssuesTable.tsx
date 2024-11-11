@@ -1,27 +1,20 @@
 "use client";
 import { Issue, Status } from "@prisma/client";
 import { Table } from "@radix-ui/themes";
-import React, { useState } from "react";
 import NextLink from "next/link";
+import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
 import { IssueStatusBadge, Link } from "../Components";
-import { IoIosArrowRoundUp, IoIosArrowRoundDown } from "react-icons/io";
 interface Props {
   columns: { label: string; value: keyof Issue }[];
   issues: Issue[];
-  searchParams: { status: Status; orderBy: keyof Issue };
+  searchParams: { status: Status; orderBy: keyof Issue,order:'asc'|'desc' };
 }
 
 const IssuesTable = ({ columns, issues, searchParams }: Props) => {
-  const [sortOrder, setSortOrder] = useState<"ascending" | "descending" | "">(
-    ""
-  );
-  const sortHandler = () => {
-    if (!sortOrder || sortOrder === "descending") {
-      setSortOrder("ascending");
-    } else {
-      setSortOrder("descending");
-    }
-  };
+  
+  const toggleSortOrder =(currentOrder:'asc'|'desc')=>{
+   return currentOrder==='asc'?'desc':'asc'
+  }
   return (
     <Table.Root variant="surface">
       <Table.Header>
@@ -29,15 +22,27 @@ const IssuesTable = ({ columns, issues, searchParams }: Props) => {
           {columns.map(({ label, value }) => (
             <Table.ColumnHeaderCell key={value}>
               <NextLink
-                onClick={sortHandler}
-                href={{ query: { ...searchParams, orderBy: value } }}
+                href={
+                    {
+                        pathname:"/issues",
+                        query:{
+                            ...searchParams,
+                            orderBy:value,
+                            order:
+                            searchParams.orderBy===value
+                            ?toggleSortOrder(searchParams.order):
+                            'asc'
+                        }
+
+                    }
+                }
               >
                 {label}
               </NextLink>
               {value === searchParams.orderBy ? (
-                sortOrder === "ascending" ? (
+                searchParams.order === "asc" ? (
                   <IoIosArrowRoundUp className="inline text-xl" />
-                ) : sortOrder === "descending" ? (
+                ) : searchParams.order === "desc" ? (
                   <IoIosArrowRoundDown className="inline text-xl" />
                 ) : null
               ) : null}
@@ -47,9 +52,7 @@ const IssuesTable = ({ columns, issues, searchParams }: Props) => {
       </Table.Header>
       <Table.Body>
         {issues.map((issue) => {
-          console.log(
-            `Issue ID: ${issue.id}, Status: ${issue.status}, Title: ${issue.title}`
-          );
+        
           return (
             <Table.Row key={issue.id}>
               <Table.Cell>
