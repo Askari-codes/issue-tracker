@@ -12,25 +12,22 @@ const IssuesStatusFilter = () => {
     { label: "IN PROGRESS", value: "IN_PROGRESS" },
   ];
   const router = useRouter();
-  const searchParams = useSearchParams()
-  
+  const searchParams = useSearchParams();
+
   const handleSelectChange = (status: string) => {
-    const params=new URLSearchParams()
-    if(status) params.append('status',status)
-      if(searchParams.get('orderBy'))
-        params.append('orderBy',searchParams.get('orderBy')!)
-    
-    searchParams.get('orderBy')
-    const query = params.size? "?" + params.toString():''
-   
-    
+    const params = new URLSearchParams();
+    if (status) params.append("status", status);
+    if (searchParams.get("orderBy"))
+      params.append("orderBy", searchParams.get("orderBy")!);
+    const query = params.size ? "?" + params.toString() : "";
     router.push("/issues/" + query);
   };
 
   return (
     <Select.Root
-    defaultValue={searchParams.get('status')||''}
-    onValueChange={handleSelectChange}>
+      defaultValue={searchParams.get("status") || ""}
+      onValueChange={handleSelectChange}
+    >
       <Select.Trigger placeholder="Filter issues" />
       <Select.Content>
         <Select.Group></Select.Group>
