@@ -4,10 +4,19 @@ import { Table } from "@radix-ui/themes";
 import NextLink from "next/link";
 import { IoIosArrowRoundDown, IoIosArrowRoundUp } from "react-icons/io";
 import { IssueStatusBadge, Link } from "../Components";
+
+export interface IssueQuery{
+  status: Status;
+   orderBy: keyof Issue;
+  order:'asc'|'desc';
+  page:string 
+
+}
+
 interface Props {
   columns: { label: string; value: keyof Issue }[];
   issues: Issue[];
-  searchParams: { status: Status; orderBy: keyof Issue,order:'asc'|'desc' };
+  searchParams: IssueQuery;
 }
 
 const IssuesTable = ({ columns, issues, searchParams }: Props) => {
