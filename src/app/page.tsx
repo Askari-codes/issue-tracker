@@ -1,16 +1,10 @@
-'use client'
-import { useEffect } from 'react';
+import LatestIssues from "./LatestIssues";
 
-export default function Home({searchParams}:{searchParams:{page:string}}) {
- useEffect(() => {
-  console.log(searchParams);
-  
- }, []);
+export default function Home() {
+ 
   return (
-  <div className='text-black'>
-dashboard
-
-  </div>
-  )
-
+    <div className="text-black">
+      <LatestIssues />
+    </div>
+  );
 }
