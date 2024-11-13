@@ -1,10 +1,21 @@
-import LatestIssues from "./LatestIssues";
+import prisma from "@/prisma/client";
+import IssueSummary from "./IssueSummary";
 
-export default function Home() {
+
+export default async function Home() {
+const Open = await prisma.issue.count({
+  where:{status:"OPEN"}
+})
+const In_Progress = await prisma.issue.count({
+  where:{status:'IN_PROGRESS'}
+})
+const Close = await prisma.issue.count({
+  where:{status:'CLOSE'}
+})
  
   return (
     <div className="text-black">
-      <LatestIssues />
+    <IssueSummary Open={Open} Close={Close} In_Progress={In_Progress}/>
     </div>
   );
 }
