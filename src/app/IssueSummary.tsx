@@ -3,12 +3,15 @@ import { Card, Flex,Text } from "@radix-ui/themes";
 import Link from "next/link";
 import React from "react";
 interface Props{
-    Open:number;
-    Close:number;
-    In_Progress:number;
+    IssuesNumber:{
+        Open:number;
+        Close:number;
+        In_Progress:number;
+    }
+   
 }
 
-const IssueSummary = ({Open,Close,In_Progress}:Props) => {
+const IssueSummary = ({IssuesNumber:{Open,Close,In_Progress}}:Props) => {
   const containers: {
     label: string;
     value: number;
