@@ -18,7 +18,7 @@ const LatestIssues = async () => {
         <Table.Root>
       <Table.Body>
           {issues.map(({ id, status, title, assignedToUser }) => (
-            <Table.Row>
+            <Table.Row key={id}>
               <Table.Cell key={id}>
                 <Flex justify='between'>
                   <Flex direction="column" align='baseline' gap='2'>

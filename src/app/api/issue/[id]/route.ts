@@ -49,7 +49,7 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  request: NextResponse,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   const session = await getServerSession(authOptions);

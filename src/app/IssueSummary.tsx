@@ -24,7 +24,7 @@ const IssueSummary = ({IssuesNumber:{Open,Close,In_Progress}}:Props) => {
   return(
    <Flex gap='2'>
      {containers.map(({label,value,status})=>(
-        <Card>
+        <Card key={label}>
             <Flex direction='column' align='center'>
                 <Link href={`/issues?status=${status}`}>
                 {label}
